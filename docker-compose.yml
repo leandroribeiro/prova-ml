@@ -1,0 +1,33 @@
+version: '3.4'
+
+networks:
+
+  backend:
+    driver: bridge
+
+services:
+
+  provaml_database:
+    container_name: provaml_database
+    image: ${REGISTRY:-provaml}/database:${PLATFORM:-linux}-${TAG:-latest}
+    mem_limit: 2G
+    build:
+      context: ./Database
+      dockerfile: Dockerfile
+    ports:
+      - "5434:1433"
+    networks:
+      - backend
+
+  provaml_app:
+    container_name: provaml_app
+    image: ${REGISTRY:-provaml}/dbup_app:${PLATFORM:-linux}-${TAG:-latest}
+    build:
+      context: ./ProvaML.Migration
+      dockerfile: Dockerfile
+    environment:
+      - ConnectionString=Server=provaml_database,1433;Database=ProvaML;User Id=sa;Password=Dev123456789;
+    depends_on:
+      - provaml_database
+    networks:
+      - backend 
