@@ -19,9 +19,9 @@ services:
     networks:
       - backend
 
-  provaml_app:
-    container_name: provaml_app
-    image: ${REGISTRY:-provaml}/dbup_app:${PLATFORM:-linux}-${TAG:-latest}
+  provaml_migration:
+    container_name: provaml_migration
+    image: ${REGISTRY:-provaml}/migration:${PLATFORM:-linux}-${TAG:-latest}
     build:
       context: ./ProvaML.Migration
       dockerfile: Dockerfile

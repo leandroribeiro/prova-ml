@@ -1,3 +1,9 @@
 ﻿INSERT INTO Produtos(Nome, ValorVenda, Imagem)VALUES('Produto 1', 100.00, '');
 INSERT INTO Produtos(Nome, ValorVenda, Imagem)VALUES('Produto 2', 200.00, '');
 INSERT INTO Produtos(Nome, ValorVenda, Imagem)VALUES('Produto 3', 300.00, '');
+INSERT INTO Produtos(Nome, ValorVenda, Imagem)VALUES('Produto 4', 400.00, '');
+INSERT INTO Produtos(Nome, ValorVenda, Imagem)VALUES('Produto 5', 500.00, '');
+INSERT INTO Produtos(Nome, ValorVenda, Imagem)VALUES('Produto 6', 600.00, '');
+INSERT INTO Produtos(Nome, ValorVenda, Imagem)VALUES('Produto 7', 700.00, '');
+INSERT INTO Produtos(Nome, ValorVenda, Imagem)VALUES('Produto 8', 800.00, '');
+INSERT INTO Produtos(Nome, ValorVenda, Imagem)VALUES('Produto 9', 900.00, '');

@@ -10,7 +10,7 @@ namespace ProvaML.Migration
     {
         static int Main(string[] args)
         {
-            Thread.Sleep(TimeSpan.FromSeconds(15));
+            Thread.Sleep(TimeSpan.FromSeconds(30));
             
             var connectionString =
                 args.FirstOrDefault()
