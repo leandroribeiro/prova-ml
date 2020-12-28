@@ -31,3 +31,20 @@ services:
       - provaml_database
     networks:
       - backend 
+
+  provaml_api:
+    image: ${REGISTRY:-provaml}/api:${PLATFORM:-linux}-${TAG:-latest}
+    container_name: "provaml_api"
+    build:
+      context: .
+      dockerfile: ./ProvaML.API/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=provaml_database,1433;Database=ProvaML;User Id=sa;Password=Dev123456789;
+    ports:
+      - "8081:80"
+    depends_on:
+      - provaml_database
+      - provaml_migration
+    networks: 
+      - backend 

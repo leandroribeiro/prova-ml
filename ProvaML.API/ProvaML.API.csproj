@@ -13,8 +13,19 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\ProvaML.Application\ProvaML.Application.csproj" />
       <ProjectReference Include="..\ProvaML.Domain\ProvaML.Domain.csproj" />
       <ProjectReference Include="..\ProvaML.Infrastructure\ProvaML.Infrastructure.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="imagens\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="imagens\notfound.png">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
 </Project>

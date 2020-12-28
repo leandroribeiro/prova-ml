@@ -1,17 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Hosting;
+using System.Security.Policy;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
-using Microsoft.VisualBasic.CompilerServices;
 using ProvaML.API.Model;
+using ProvaML.Application;
 using ProvaML.Domain.Entities;
 using ProvaML.Domain.Repositories;
+using ProvaML.Infrastructure;
+using ProvaML.Infrastructure.File;
 
 namespace ProvaML.API.Controllers
 {
@@ -22,54 +24,40 @@ namespace ProvaML.API.Controllers
 
         private readonly ILogger<ProdutoController> _logger;
         private readonly IProdutoRepository _repository;
-        private readonly IWebHostEnvironment _environment;
+        private readonly IProdutoAppService _produtoAppService;
 
-        public ProdutoController(ILogger<ProdutoController> logger, [FromServices] IProdutoRepository repository, IWebHostEnvironment environment)
+        public ProdutoController(ILogger<ProdutoController> logger, [FromServices] IProdutoRepository repository, IProdutoAppService produtoAppService)
         {
             _logger = logger;
             _repository = repository;
-            _environment = environment;
+            _produtoAppService = produtoAppService;
         }
 
 
         [HttpGet]
-        public ActionResult<IEnumerable<Produto>>  Get()
+        public ActionResult<IEnumerable<ProdutoViewModel>> Get()
         {
-            return Ok(_repository.Obter());
+            var produtos = _repository.Obter();
+
+            return Ok(produtos.Select(x => new ProdutoViewModel(x, Url)));
         }
 
         [HttpGet("{id}")]
-        public ActionResult<Produto> Get(int id)
+        public ActionResult<ProdutoViewModel> Get(int id)
         {
             if (id <= 0)
             {
                 return BadRequest();
             }
-            
-            var produto = _repository.Obter(id); 
 
-            if (produto == null) 
-            { 
-                return NotFound(); 
-            } 
+            var produto = _repository.Obter(id);
 
-            return produto; 
-        }
-        
-        [HttpPost]
-        [ProducesResponseType((int)HttpStatusCode.Created)]
-        public IActionResult Post([FromBody] CreateProdutoRequest data)
-        {
-            if (data is null)
+            if (produto == null)
             {
-                return BadRequest();
+                return NotFound();
             }
-            
-            //var campaign = MapCampaignDtoToModel(campaignDto);
-            
-            // _repository.Inserir();
 
-            return CreatedAtAction(nameof(Get), routeValues: new { data.Id }, null);
+            return new ProdutoViewModel(produto, Url);
         }
 
         [HttpPut("{id}")]
@@ -81,7 +69,7 @@ namespace ProvaML.API.Controllers
             }
 
             var produtoParaAtualizar = _repository.Obter(id);
-            
+
             if (produtoParaAtualizar is null)
             {
                 return NotFound();
@@ -106,45 +94,45 @@ namespace ProvaML.API.Controllers
             }
 
             var produtoParaExcluir = _repository.Obter(id);
-            
+
             if (produtoParaExcluir is null)
             {
                 return NotFound();
             }
-            
+
             _repository.Excluir(produtoParaExcluir);
 
             return NoContent();
 
         }
 
-        [HttpPost("upload")]
-        public async Task<string> EnviaArquivo([FromForm] IFormFile arquivo)
+        [HttpPost]
+        [ProducesResponseType((int)HttpStatusCode.Created)]
+        public IActionResult Post([FromForm] string nome, [FromForm] decimal valorVenda, [FromForm] IFormFile arquivo)
         {
-            if (arquivo.Length > 0)
+            if (arquivo.Length <= 0)
+                return BadRequest("Nenhuma imagem enviada.");
+
+            var produto = _produtoAppService.Criar(nome, valorVenda, arquivo);
+
+            return CreatedAtAction(nameof(Get), routeValues: new { produto.Id }, null);
+
+        }
+
+        [HttpGet("{id}/imagem", Name = "GetImagem")]
+        public ActionResult<Produto> GetImagem(int id)
+        {
+            if (id <= 0)
             {
-                try
-                {
-                    if (!Directory.Exists(_environment.ContentRootPath + "\\imagens\\"))
-                    {
-                        Directory.CreateDirectory(_environment.ContentRootPath + "\\imagens\\");
-                    }
-                    using (FileStream filestream = System.IO.File.Create(_environment.ContentRootPath + "\\imagens\\" + arquivo.FileName))
-                    {
-                        await arquivo.CopyToAsync(filestream);
-                        filestream.Flush();
-                        return "\\imagens\\" + arquivo.FileName;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    return ex.ToString();
-                }
+                return BadRequest();
             }
-            else
-            {
-                return "Ocorreu uma falha no envio do arquivo...";
-            }
+
+            var imagem = _produtoAppService.BaixarImagem(id);
+
+            if (imagem != null)
+                return File(imagem.Stream, imagem.ContentType);
+
+            return NotFound();
         }
     }
 }

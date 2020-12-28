@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ProvaML.Domain.Entities;
 
-namespace ProvaML.Infrastructure
+namespace ProvaML.Infrastructure.Data
 {
     public class ProvaMLContext : DbContext
     {

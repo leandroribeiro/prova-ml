@@ -12,9 +12,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using ProvaML.Application;
 using ProvaML.Infrastructure.Data;
 using ProvaML.Domain.Repositories;
 using ProvaML.Infrastructure;
+using ProvaML.Infrastructure.File;
 
 namespace ProvaML.API
 {
@@ -33,12 +35,25 @@ namespace ProvaML.API
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo {Title = "ProvaML.API", Version = "v1"});
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "Prova ML API", 
+                    Version = "v1",
+                    Contact = new OpenApiContact()
+                    {
+                        Name = "Leandro Ribeiro",
+                        Email = string.Empty,
+                        Url = new Uri("https://github.com/leandroribeiro")
+                    }
+                });
             });
 
             services.AddEntityFrameworkSqlServer()
-                .AddDbContext<ProvaMLContext>(options => options.UseSqlServer(Configuration["ConnectionString"]));
+                .AddDbContext<ProvaMLContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
             services.AddScoped<IProdutoRepository, ProdutoRepository>();
+            services.AddSingleton<IImageStorage, LocalImageStorage>();
+            services.AddScoped<IProdutoAppService, ProdutoAppService>();
 
         }
 
@@ -48,17 +63,19 @@ namespace ProvaML.API
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ProvaML.API v1"));
             }
 
-            app.UseHttpsRedirection();
+            //TODO
+            //app.UseHttpsRedirection();
 
             app.UseRouting();
 
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ProvaML API v1"));
         }
     }
 }
