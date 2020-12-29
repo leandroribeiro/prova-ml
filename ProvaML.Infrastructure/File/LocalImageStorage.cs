@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Hosting;
 
@@ -6,29 +7,28 @@ namespace ProvaML.Infrastructure.File
 {
     public class LocalImageStorage : IImageStorage
     {
-        private const string FOLDER_IMAGES = "\\imagens\\";
-        private string NOT_FOUND_IMAGE = "notfound.png";
+        public const string FOLDER_IMAGES = "imagens";
+        public const string NOT_FOUND_IMAGE = "notfound.png";
 
         private readonly string _repositorioDeImagens;
 
         public LocalImageStorage(IHostEnvironment env)
         {
-            _repositorioDeImagens = env.ContentRootPath + FOLDER_IMAGES;
+            if (env.IsDevelopment())
+                 _repositorioDeImagens = env.ContentRootPath + FOLDER_IMAGES;
+            else
+                _repositorioDeImagens = FOLDER_IMAGES;
         }
 
-        public void CarregarImagem(string destino, IFormFile arquivo)
+        public void CarregarImagem(string nomeArquivo, IFormFile arquivo)
         {
-            var caminhoDestinoImagem = Path.Combine(_repositorioDeImagens, destino);
+            var caminhoDestinoImagem = Path.Combine(_repositorioDeImagens, nomeArquivo);
 
             if (System.IO.File.Exists(caminhoDestinoImagem))
-            {
                 System.IO.File.Delete(caminhoDestinoImagem);
-            }
 
             if (!Directory.Exists(_repositorioDeImagens))
-            {
                 Directory.CreateDirectory(_repositorioDeImagens);
-            }
 
             using (var filestream = System.IO.File.Create(caminhoDestinoImagem))
             {
@@ -39,8 +39,13 @@ namespace ProvaML.Infrastructure.File
 
         public byte[] BaixarImagem(string nomeArquivo)
         {
-            var caminhoDestinoImagem = Path.Combine(_repositorioDeImagens, nomeArquivo);
+            string caminhoDestinoImagem = Path.Combine(_repositorioDeImagens, nomeArquivo);
 
+            //existe nome informado
+            if (string.IsNullOrEmpty(nomeArquivo))
+                caminhoDestinoImagem = Path.Combine(_repositorioDeImagens, NOT_FOUND_IMAGE);
+
+            //arquivo existe
             if (!System.IO.File.Exists(caminhoDestinoImagem))
                 caminhoDestinoImagem = Path.Combine(_repositorioDeImagens, NOT_FOUND_IMAGE);
 
@@ -51,7 +56,13 @@ namespace ProvaML.Infrastructure.File
 
         public static string GetImageMimeTypeFromImageFileExtension(string fileName)
         {
-            var extension = Path.GetExtension(fileName);
+            string arquivo = fileName;
+
+            //existe arquivo
+            if (string.IsNullOrEmpty(arquivo))
+                arquivo = LocalImageStorage.NOT_FOUND_IMAGE;
+
+            var extension = Path.GetExtension(arquivo);
 
             return getImageMimeTypeFromImageFileExtension(extension);
         }

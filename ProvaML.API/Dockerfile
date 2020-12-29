@@ -13,13 +13,12 @@ COPY "ProvaML.Infrastructure/ProvaML.Infrastructure.csproj" "ProvaML.Infrastruct
 COPY "ProvaML.Infrastructure.Tests/ProvaML.Infrastructure.Tests.csproj" "ProvaML.Infrastructure.Tests/ProvaML.Infrastructure.Tests.csproj"
 COPY "ProvaML.Migration/ProvaML.Migration.csproj" "ProvaML.Migration/ProvaML.Migration.csproj"
 RUN dotnet restore
-
-
 COPY . .
 WORKDIR /src/ProvaML.API
-RUN dotnet publish -c Release -o /api
+RUN dotnet build -c Release -o /api
 
 FROM build AS publish
+RUN dotnet publish -c Release -o /api
 
 FROM base AS final
 WORKDIR /api

@@ -23,20 +23,35 @@ namespace ProvaML.Application
             _imageStorage = imageStorage;
         }
 
+        public Produto AdicionarImagem(int id, IFormFile arquivo)
+        {
+            var produto = _repository.Obter(id);
+            
+            var nomeArquivo = CarregarImagem(arquivo, produto);
+
+            produto.Imagem = nomeArquivo;
+
+            _repository.Editar(produto);
+
+            return produto;
+        }
+
+        private string CarregarImagem(IFormFile arquivo, Produto produto)
+        {
+            var nomeArquivo = $"{produto.Id}__{Urlizer.Sanitizar(produto.Nome)}{Path.GetExtension(arquivo.FileName)}";
+
+            _imageStorage.CarregarImagem(nomeArquivo, arquivo);
+            
+            return nomeArquivo;
+        }
+
         public Produto Criar(string nome, decimal valorVenda, IFormFile arquivo)
         {
-            var produto = _repository.Inserir(new Produto
-            {
-                Nome = nome,
-                ValorVenda = valorVenda,
-                Imagem = string.Empty
-            });
+            var produto = this.Criar(nome, valorVenda);
 
-            var destino = $"{produto.Id}__{Urlizer.Sanitizar(nome)}{Path.GetExtension(arquivo.FileName)}";
+            var nomeArquivo = CarregarImagem(arquivo, produto);
 
-            _imageStorage.CarregarImagem(destino, arquivo);
-
-            produto.Imagem = destino;
+            produto.Imagem = nomeArquivo;
 
             _repository.Editar(produto);
 
@@ -57,6 +72,16 @@ namespace ProvaML.Application
             }
 
             return null;
+        }
+
+        public Produto Criar(string nome, decimal valorVenda)
+        {
+            return _repository.Inserir(new Produto
+            {
+                Nome = nome,
+                ValorVenda = valorVenda,
+                Imagem = string.Empty
+            });
         }
     }
 }

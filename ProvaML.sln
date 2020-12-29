@@ -34,6 +34,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{FFF66EB8-5
 		README.md = README.md
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProvaML.API.IntegrationTests", "ProvaML.API.IntegrationTests\ProvaML.API.IntegrationTests.csproj", "{58C01D5D-B48E-4F56-B973-20C018221855}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -64,6 +66,10 @@ Global
 		{65E38A0A-4E78-49B8-8872-AE44467FA6D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{65E38A0A-4E78-49B8-8872-AE44467FA6D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{65E38A0A-4E78-49B8-8872-AE44467FA6D2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{58C01D5D-B48E-4F56-B973-20C018221855}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{58C01D5D-B48E-4F56-B973-20C018221855}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{58C01D5D-B48E-4F56-B973-20C018221855}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{58C01D5D-B48E-4F56-B973-20C018221855}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -76,6 +82,7 @@ Global
 		{157BB3A2-04C5-492E-8C2D-53D12267769C} = {569264AD-54EF-43EB-A16B-FE3ED74A272B}
 		{11522E35-828A-4E17-B452-4E7EBEDE814D} = {569264AD-54EF-43EB-A16B-FE3ED74A272B}
 		{65E38A0A-4E78-49B8-8872-AE44467FA6D2} = {569264AD-54EF-43EB-A16B-FE3ED74A272B}
+		{58C01D5D-B48E-4F56-B973-20C018221855} = {569264AD-54EF-43EB-A16B-FE3ED74A272B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0B18FA7C-9EEC-4503-AA72-43C0387EA1D6}

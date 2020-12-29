@@ -1,24 +1,18 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Net;
-using System.Security.Policy;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Routing;
-using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
 using ProvaML.API.Model;
 using ProvaML.Application;
 using ProvaML.Domain.Entities;
 using ProvaML.Domain.Repositories;
-using ProvaML.Infrastructure;
-using ProvaML.Infrastructure.File;
 
 namespace ProvaML.API.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("produtos")]
     public class ProdutoController : ControllerBase
     {
 
@@ -46,69 +40,42 @@ namespace ProvaML.API.Controllers
         public ActionResult<ProdutoViewModel> Get(int id)
         {
             if (id <= 0)
-            {
                 return BadRequest();
-            }
 
             var produto = _repository.Obter(id);
 
             if (produto == null)
-            {
                 return NotFound();
-            }
 
-            return new ProdutoViewModel(produto, Url);
+            return Ok(new ProdutoViewModel(produto, Url));
         }
+
 
         [HttpPut("{id}")]
-        public ActionResult<Produto> Put(int id, [FromBody] AtualizarProdutoRequest data)
-        {
-            if (id < 1 || data is null)
-            {
-                return BadRequest();
-            }
-
-            var produtoParaAtualizar = _repository.Obter(id);
-
-            if (produtoParaAtualizar is null)
-            {
-                return NotFound();
-            }
-
-            produtoParaAtualizar.Nome = data.Nome;
-            produtoParaAtualizar.ValorVenda = data.ValorVenda;
-            produtoParaAtualizar.Imagem = data.Imagem;
-
-            _repository.Editar(produtoParaAtualizar);
-
-            return produtoParaAtualizar;
-        }
-
-        [HttpDelete("{id}")]
-        [ProducesResponseType(typeof(void), (int)HttpStatusCode.OK)]
-        public ActionResult Delete(int id)
+        [ProducesResponseType((int) HttpStatusCode.OK)]
+        public ActionResult<Produto> Put([FromRoute] int id, [FromForm] string nome, [FromForm] decimal valorVenda, [FromForm] IFormFile arquivo)
         {
             if (id < 1)
-            {
                 return BadRequest();
-            }
-
-            var produtoParaExcluir = _repository.Obter(id);
-
-            if (produtoParaExcluir is null)
-            {
+            
+            var produtoParaAtualizar = _repository.Obter(id);
+            
+            if (produtoParaAtualizar is null)
                 return NotFound();
-            }
-
-            _repository.Excluir(produtoParaExcluir);
-
-            return NoContent();
-
+            
+            produtoParaAtualizar.Nome = nome;
+            produtoParaAtualizar.ValorVenda = valorVenda;
+            
+            _produtoAppService.AdicionarImagem(id, arquivo);
+            
+            _repository.Editar(produtoParaAtualizar);
+            
+            return Ok(produtoParaAtualizar);
         }
-
+        
         [HttpPost]
         [ProducesResponseType((int)HttpStatusCode.Created)]
-        public IActionResult Post([FromForm] string nome, [FromForm] decimal valorVenda, [FromForm] IFormFile arquivo)
+        public ActionResult Post([FromForm] string nome, [FromForm] decimal valorVenda, [FromForm] IFormFile arquivo)
         {
             if (arquivo.Length <= 0)
                 return BadRequest("Nenhuma imagem enviada.");
@@ -118,7 +85,39 @@ namespace ProvaML.API.Controllers
             return CreatedAtAction(nameof(Get), routeValues: new { produto.Id }, null);
 
         }
+        
+        [HttpDelete("{id}")]
+        [ProducesResponseType(typeof(void), (int)HttpStatusCode.OK)]
+        public ActionResult Delete(int id)
+        {
+            if (id < 1)
+                return BadRequest();
 
+            var produtoParaExcluir = _repository.Obter(id);
+
+            if (produtoParaExcluir is null)
+                return NotFound();
+
+            _repository.Excluir(produtoParaExcluir);
+
+            return NoContent();
+
+        }
+        
+        [HttpPost("{id}/imagem", Name = "PostImagem")]
+        public ActionResult<Produto> PostImagem(int id, [FromForm] IFormFile arquivo)
+        {
+            if (id <= 0)
+                return BadRequest();
+            
+            if (arquivo.Length <= 0)
+                return BadRequest("Nenhuma imagem enviada.");
+
+            _produtoAppService.AdicionarImagem(id, arquivo);
+
+            return Ok();
+        }
+        
         [HttpGet("{id}/imagem", Name = "GetImagem")]
         public ActionResult<Produto> GetImagem(int id)
         {
