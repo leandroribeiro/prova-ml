@@ -7,6 +7,7 @@ WORKDIR /src
 
 COPY "ProvaML.sln" "ProvaML.sln"
 COPY "ProvaML.API/ProvaML.API.csproj" "ProvaML.API/ProvaML.API.csproj"
+COPY "ProvaML.API.IntegrationTests/ProvaML.API.IntegrationTests.csproj" "ProvaML.API.IntegrationTests/ProvaML.API.IntegrationTests.csproj"
 COPY "ProvaML.Application/ProvaML.Application.csproj" "ProvaML.Application/ProvaML.Application.csproj"
 COPY "ProvaML.Domain/ProvaML.Domain.csproj" "ProvaML.Domain/ProvaML.Domain.csproj"
 COPY "ProvaML.Infrastructure/ProvaML.Infrastructure.csproj" "ProvaML.Infrastructure/ProvaML.Infrastructure.csproj"
