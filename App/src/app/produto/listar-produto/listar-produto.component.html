@@ -1,0 +1,30 @@
+<div class="col-md-6 user-container">
+    <h2 style="margin: auto"> Produtos</h2>
+    <button class="btn btn-danger" style="width:100px" (click)="adicionarProduto()"> Adicionar</button>
+    <table class="table table-striped">
+      <thead>
+      <tr>
+        <th class="hidden">Id</th>
+        <th>Nome</th>
+        <th>Valor de Venda</th>
+        <th>Imagem</th>
+        <th></th>
+      </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of produtos">
+        <td class="hidden">{{item.id}}</td>
+        <td>{{item.nome}}</td>
+        <td>{{item.valorDeVenda | currency: 'BRL': true}}</td>
+        <td>
+          <img class="box-img-detail" src="http://localhost:8081/produtos/1/imagem"/>
+          <h2>{{item?.imagemRoute}}</h2>
+          {{item?.imagem2}}
+        </td>
+        <td><button class="btn btn-success" (click)="excluirProduto(item)"> Excluir</button>
+          <button class="btn btn-success" (click)="editarProduto(item)" style="margin-left: 20px;"> Editar</button></td>
+        </tr>
+      </tbody>
+    </table>
+    
+  </div>
