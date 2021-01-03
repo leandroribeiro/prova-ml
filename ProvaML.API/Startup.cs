@@ -55,6 +55,18 @@ namespace ProvaML.API
             services.AddSingleton<IImageStorage, LocalImageStorage>();
             services.AddScoped<IProdutoAppService, ProdutoAppService>();
 
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy",
+                    builder => builder
+                        //.WithOrigins("http://localhost:4200")
+                        .AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader());
+                // .AllowCredentials());
+            });
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -70,11 +82,7 @@ namespace ProvaML.API
 
             app.UseRouting();
 
-            // global cors policy
-            app.UseCors(x => x
-                .AllowAnyOrigin()
-                .AllowAnyMethod()
-                .AllowAnyHeader());
+            app.UseCors("CorsPolicy");
 
             //TODO
             //app.UseAuthorization();

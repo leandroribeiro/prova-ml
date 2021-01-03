@@ -33,7 +33,7 @@ namespace ProvaML.API.Controllers
         {
             var produtos = _repository.Obter();
 
-            return Ok(produtos.Select(x => new ProdutoViewModel(x, Url)));
+            return Ok(produtos.Select(x => new ProdutoViewModel(x, Url, HttpContext)));
         }
 
         [HttpGet("{id}")]
@@ -47,13 +47,13 @@ namespace ProvaML.API.Controllers
             if (produto == null)
                 return NotFound();
 
-            return Ok(new ProdutoViewModel(produto, Url));
+            return Ok(new ProdutoViewModel(produto, Url, HttpContext));
         }
 
 
         [HttpPut("{id}")]
         [ProducesResponseType((int) HttpStatusCode.OK)]
-        public ActionResult<Produto> Put([FromRoute] int id, [FromForm] string nome, [FromForm] decimal valorVenda, [FromForm] IFormFile arquivo)
+        public ActionResult<Produto> Put([FromRoute] int id, [FromForm] string nome, [FromForm] decimal valorDeVenda, [FromForm] IFormFile imagem)
         {
             if (id < 1)
                 return BadRequest();
@@ -64,9 +64,9 @@ namespace ProvaML.API.Controllers
                 return NotFound();
             
             produtoParaAtualizar.Nome = nome;
-            produtoParaAtualizar.ValorVenda = valorVenda;
+            produtoParaAtualizar.ValorVenda = valorDeVenda;
             
-            _produtoAppService.AdicionarImagem(id, arquivo);
+            _produtoAppService.AdicionarImagem(id, imagem);
             
             _repository.Editar(produtoParaAtualizar);
             
@@ -75,12 +75,12 @@ namespace ProvaML.API.Controllers
         
         [HttpPost]
         [ProducesResponseType((int)HttpStatusCode.Created)]
-        public ActionResult Post([FromForm] string nome, [FromForm] decimal valorVenda, [FromForm] IFormFile arquivo)
+        public ActionResult Post([FromForm] string nome, [FromForm] decimal valorDeVenda, [FromForm] IFormFile imagem)
         {
-            if (arquivo.Length <= 0)
+            if (imagem == null || imagem.Length <= 0)
                 return BadRequest("Nenhuma imagem enviada.");
 
-            var produto = _produtoAppService.Criar(nome, valorVenda, arquivo);
+            var produto = _produtoAppService.Criar(nome, valorDeVenda, imagem);
 
             return CreatedAtAction(nameof(Get), routeValues: new { produto.Id }, null);
 
