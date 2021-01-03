@@ -15,7 +15,7 @@ namespace ProvaML.Infrastructure.File
         public LocalImageStorage(IHostEnvironment env)
         {
             if (env.IsDevelopment())
-                 _repositorioDeImagens = env.ContentRootPath + FOLDER_IMAGES;
+                 _repositorioDeImagens = Path.Combine(env.ContentRootPath, FOLDER_IMAGES);
             else
                 _repositorioDeImagens = FOLDER_IMAGES;
         }
@@ -37,19 +37,26 @@ namespace ProvaML.Infrastructure.File
             }
         }
 
+        public byte[] BaixarImagem()
+        {
+            var caminhoImagem = Path.Combine(_repositorioDeImagens, NOT_FOUND_IMAGE);
+
+            return baixarImagem(caminhoImagem);
+        }
+        
         public byte[] BaixarImagem(string nomeArquivo)
         {
-            string caminhoDestinoImagem = Path.Combine(_repositorioDeImagens, nomeArquivo);
+            string caminhoImagem = Path.Combine(_repositorioDeImagens, nomeArquivo);
 
-            //existe nome informado
-            if (string.IsNullOrEmpty(nomeArquivo))
-                caminhoDestinoImagem = Path.Combine(_repositorioDeImagens, NOT_FOUND_IMAGE);
+            if (string.IsNullOrEmpty(nomeArquivo) || !System.IO.File.Exists(caminhoImagem))
+                return BaixarImagem();
 
-            //arquivo existe
-            if (!System.IO.File.Exists(caminhoDestinoImagem))
-                caminhoDestinoImagem = Path.Combine(_repositorioDeImagens, NOT_FOUND_IMAGE);
-
-            var buffer = System.IO.File.ReadAllBytes(caminhoDestinoImagem);
+            return baixarImagem(caminhoImagem);
+            
+        }
+        private byte[] baixarImagem(string caminhoImagem)
+        {
+            var buffer = System.IO.File.ReadAllBytes(caminhoImagem);
 
             return buffer;
         }

@@ -60,18 +60,27 @@ namespace ProvaML.Application
 
         public ImagemDTO BaixarImagem(int id)
         {
+            ImagemDTO imagemDto = null;
+            
             var produto = _repository.Obter(id);
-
+    
             if (produto != null)
             {
-                return new ImagemDTO()
-                {
-                    Stream = _imageStorage.BaixarImagem(produto.Imagem),
-                    ContentType = LocalImageStorage.GetImageMimeTypeFromImageFileExtension(produto.Imagem)
-                };
+                if(!string.IsNullOrEmpty(produto.Imagem))
+                    imagemDto = new ImagemDTO()
+                    {
+                        Stream = _imageStorage.BaixarImagem(produto.Imagem),
+                        ContentType = LocalImageStorage.GetImageMimeTypeFromImageFileExtension(produto.Imagem)
+                    };
+                else
+                    imagemDto = new ImagemDTO()
+                    {
+                        Stream = _imageStorage.BaixarImagem(),
+                        ContentType = LocalImageStorage.GetImageMimeTypeFromImageFileExtension(LocalImageStorage.NOT_FOUND_IMAGE)
+                    };
             }
 
-            return null;
+            return imagemDto;
         }
 
         public Produto Criar(string nome, decimal valorVenda)

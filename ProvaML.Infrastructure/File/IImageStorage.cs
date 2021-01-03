@@ -6,5 +6,6 @@ namespace ProvaML.Infrastructure.File
     {
         void CarregarImagem(string nomeArquivo, IFormFile arquivo);
         byte[] BaixarImagem(string nomeArquivo);
+        byte[] BaixarImagem();
     }
 }
