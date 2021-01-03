@@ -1,7 +1,7 @@
 import { Component, OnInit , Inject} from '@angular/core';
-import {Router} from "@angular/router";
-import {Produto} from "../../model/produto.model";
-import {ApiService} from "../../service/api.service";
+import {Router} from '@angular/router';
+import {Produto} from '../../model/produto.model';
+import {ApiService} from '../../service/api.service';
 
 @Component({
   selector: 'app-listar-produto',
@@ -29,16 +29,18 @@ export class ListarProdutoComponent implements OnInit {
     this.apiService.excluirProduto(produto.id)
       .subscribe( data => {
         this.produtos = this.produtos.filter(u => u !== produto);
-      })
-  };
+      });
+  }
 
   editarProduto(produto: Produto): void {
-    //window.localStorage.removeItem("editarProdutoId");
-    //window.localStorage.setItem("editarProdutoId", produto.id.toString());
+    console.log(produto);
+    window.localStorage.removeItem('editarProdutoId');
+    window.localStorage.setItem('editarProdutoId', produto.id.toString());
     this.router.navigate(['editar-produto']);
-  };
+  }
 
   adicionarProduto(): void {
-    this.router.navigate(['adicionar-produto']);
-  };
+    this.router.navigate(['criar-produto']);
+  }
+  
 }

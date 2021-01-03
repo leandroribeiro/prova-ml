@@ -1,0 +1,33 @@
+<div class="col-md-6 user-container">
+  <h2 class="text-center">Editar Produto</h2>
+
+  <!-- <ng-container *ngIf="(produto$ | async) as produto; else loading"> -->
+
+  <form [formGroup]="editForm" (ngSubmit)="onSubmit()">
+    <div class="hidden">
+      <input type="text" formControlName="id" placeholder="Id" name="id" class="form-control" id="id">
+    </div>
+
+    <div class="form-group">
+      <label for="nome">Nome:</label>
+      <input type="text" formControlName="nome" placeholder="Nome" name="nome" class="form-control" id="nome">
+    </div>
+
+    <div class="form-group">
+      <label for="valorDeVenda">Valor de Venda:</label>
+      <input type="number" formControlName="valorDeVenda" placeholder="Valor de Venda" name="valorDeVenda"
+             class="form-control" id="valorDeVenda">
+    </div>
+
+    <div class="form-group">
+      <label for="imagem">Imagem:</label>
+      <img class="box-img-detail" [src]="produto?.imagemRoute" />
+      <input type="file" id="imagem" name="imagem" placeholder="Imagem" class="form-control" (change)="handleFileInput($event.target.files)" />
+    </div>
+
+    <button class="btn btn-success">Salvar</button>
+  </form>
+
+  <!-- </ng-container> -->
+  <!-- <ng-template #loading>Loading…</ng-template> -->
+</div>
