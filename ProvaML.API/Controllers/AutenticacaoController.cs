@@ -19,7 +19,7 @@ namespace ProvaML.API.Controllers
         [ProducesResponseType((int)HttpStatusCode.OK)]
         public ActionResult Post([FromBody] AutenticarRequest request)
         {
-            if(request.Usuario == "teste" && request.Senha == "teste")
+            if(request.Username == "teste" && request.Password == "teste")
                 return Ok(new { success = true });
             else
                 return BadRequest("Usuário e/ou senha inválido(s)!");
