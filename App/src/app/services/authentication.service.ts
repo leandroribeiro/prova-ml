@@ -4,6 +4,7 @@ import {BehaviorSubject, Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {User} from '../models/user';
 import {environment} from '../../environments/environment';
+import { LoginResponse } from '@app/login/login.model';
 
 const fakeJwtToken = 'fake-jwt-token';
 const currentUserKey = 'currentUser';
@@ -22,16 +23,19 @@ export class AuthenticationService {
     return this.currentUserSubject.value;
   }
 
-  login(username: string, password: string) {
-    return this.http.post<any>(`${environment.authenticationUrl}/login`, {usuario: username, senha: password})
+  login(username: string, password: string) : Observable<LoginResponse> {
+
+    return this.http.post<LoginResponse>(`${environment.authenticationUrl}/login`, {username, password})
       .pipe(map(data => {
+
         let user = null;
         if (data.success === true) {
           user = new User(username, password, fakeJwtToken);
           localStorage.setItem(currentUserKey, JSON.stringify(user));
           this.currentUserSubject.next(user);
         }
-        return user;
+        
+        return data;
       }));
   }
 

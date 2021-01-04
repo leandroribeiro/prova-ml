@@ -48,3 +48,16 @@ services:
       - provaml_migration
     networks: 
       - backend 
+
+  provaml_app:
+    image: ${REGISTRY:-provaml}/app:${PLATFORM:-linux}-${TAG:-latest}
+    container_name: "provaml_app"
+    build:
+      context: ./App
+      dockerfile: Dockerfile
+    ports:
+      - "8082:80"
+    depends_on:
+      - provaml_api
+    networks: 
+      - backend 

@@ -15,10 +15,6 @@ export class ListarProdutoComponent implements OnInit {
   constructor(private router: Router, private apiService: ProdutoService) { }
 
   ngOnInit() {
-    // if(!window.localStorage.getItem('token')) {
-      // this.router.navigate(['login']);
-      // return;
-    // }
     this.apiService.obterProdutos()
       .subscribe( data => {
         this.produtos = data;
