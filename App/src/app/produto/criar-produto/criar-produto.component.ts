@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
-import {ApiService} from '../../service/api.service';
 import {CriarProduto} from './criar-produto.model';
+import {ProdutoService} from '../../services/produto.service';
 
 @Component({
   selector: 'app-criar-produto',
@@ -13,7 +13,7 @@ export class CriarProdutoComponent implements OnInit {
 
   arquivo: File = null;
 
-  constructor(private formBuilder: FormBuilder, private router: Router, private apiService: ApiService) { }
+  constructor(private formBuilder: FormBuilder, private router: Router, private apiService: ProdutoService) { }
 
   addForm: FormGroup;
 

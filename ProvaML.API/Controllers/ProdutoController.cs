@@ -53,7 +53,7 @@ namespace ProvaML.API.Controllers
 
         [HttpPut("{id}")]
         [ProducesResponseType((int) HttpStatusCode.OK)]
-        public ActionResult<Produto> Put([FromRoute] int id, [FromForm] string nome, [FromForm] decimal valorDeVenda, [FromForm] IFormFile imagem)
+        public ActionResult<ProdutoViewModel> Put([FromRoute] int id, [FromForm] string nome, [FromForm] decimal valorDeVenda, [FromForm] IFormFile imagem)
         {
             if (id < 1)
                 return BadRequest();
@@ -70,7 +70,7 @@ namespace ProvaML.API.Controllers
             
             _repository.Editar(produtoParaAtualizar);
             
-            return Ok(produtoParaAtualizar);
+            return Ok(new ProdutoViewModel(produtoParaAtualizar, Url, HttpContext));
         }
         
         [HttpPost]

@@ -1,10 +1,10 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
-import {ApiService} from '../../service/api.service';
-import {Produto} from 'src/app/model/produto.model';
 import {first} from 'rxjs/operators';
 import {EditarProduto} from './editar-produto.model';
+import {ProdutoService} from '../../services/produto.service';
+import {Produto} from '../../models/produto';
 
 @Component({
   selector: 'app-editar-produto',
@@ -17,7 +17,7 @@ export class EditarProdutoComponent implements OnInit {
   arquivo: File = null;
   editForm: FormGroup;
 
-  constructor(private formBuilder: FormBuilder, private router: Router, private apiService: ApiService) {
+  constructor(private formBuilder: FormBuilder, private router: Router, private apiService: ProdutoService) {
   }
 
   ngOnInit() {
@@ -33,8 +33,6 @@ export class EditarProdutoComponent implements OnInit {
       id: ['', Validators.required],
       nome: ['', Validators.required],
       valorDeVenda: ['', Validators.required],
-      // imagem: ['', Validators.required],
-      // imagemRoute: ['', Validators.required]
     });
 
     this.apiService.obterProdutoPorId(+produtoId)
@@ -43,8 +41,6 @@ export class EditarProdutoComponent implements OnInit {
           this.editForm.controls.id.setValue(data.id),
           this.editForm.controls.nome.setValue(data.nome),
           this.editForm.controls.valorDeVenda.setValue(data.valorDeVenda);
-        // this.editForm.setValue(data);
-        // this.editForm.setValue(data.result);
       });
   }
 
@@ -62,6 +58,7 @@ export class EditarProdutoComponent implements OnInit {
       .pipe(first())
       .subscribe(
         data => {
+          // TODO
           // if(data.status === 200) {
           this.router.navigate(['listar-produto']);
           // this.router.navigate(['listar-produto'], {queryParams: {refresh: new Date().getTime()}});

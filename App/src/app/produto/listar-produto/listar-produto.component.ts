@@ -1,7 +1,7 @@
 import { Component, OnInit , Inject} from '@angular/core';
 import {Router} from '@angular/router';
-import {Produto} from '../../model/produto.model';
-import {ApiService} from '../../service/api.service';
+import {Produto} from '../../models/produto';
+import {ProdutoService} from '../../services/produto.service';
 
 @Component({
   selector: 'app-listar-produto',
@@ -12,7 +12,7 @@ export class ListarProdutoComponent implements OnInit {
 
   produtos: any;
 
-  constructor(private router: Router, private apiService: ApiService) { }
+  constructor(private router: Router, private apiService: ProdutoService) { }
 
   ngOnInit() {
     // if(!window.localStorage.getItem('token')) {
@@ -33,7 +33,6 @@ export class ListarProdutoComponent implements OnInit {
   }
 
   editarProduto(produto: Produto): void {
-    console.log(produto);
     window.localStorage.removeItem('editarProdutoId');
     window.localStorage.setItem('editarProdutoId', produto.id.toString());
     this.router.navigate(['editar-produto']);
@@ -42,5 +41,5 @@ export class ListarProdutoComponent implements OnInit {
   adicionarProduto(): void {
     this.router.navigate(['criar-produto']);
   }
-  
+
 }

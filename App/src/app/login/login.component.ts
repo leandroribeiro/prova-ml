@@ -1,45 +1,60 @@
 import { Component, OnInit } from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {Router} from "@angular/router";
-import {ApiService} from "../service/api.service";
+import { Router, ActivatedRoute } from '@angular/router';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { first } from 'rxjs/operators';
+import {AuthenticationService} from '../services/authentication.service';
 
-@Component({
-  selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
-})
+@Component({ templateUrl: 'login.component.html' })
 export class LoginComponent implements OnInit {
-
   loginForm: FormGroup;
-  invalidLogin: boolean = false;
-  constructor(private formBuilder: FormBuilder, private router: Router, private apiService: ApiService) { }
+  loading = false;
+  submitted = false;
+  returnUrl: string;
+  error = '';
 
-  onSubmit() {
-    if (this.loginForm.invalid) {
-      return;
+  constructor(
+    private formBuilder: FormBuilder,
+    private route: ActivatedRoute,
+    private router: Router,
+    private authenticationService: AuthenticationService
+  ) {
+    // redirect to home if already logged in
+    if (this.authenticationService.currentUserValue) {
+      this.router.navigate(['/']);
     }
-    const loginPayload = {
-      username: this.loginForm.controls.username.value,
-      password: this.loginForm.controls.password.value
-    }
-    //this.apiService.login(loginPayload).subscribe(data => {
-      //debugger;
-      //if(data.status === 200) {
-        // window.localStorage.setItem('token', data.result.token);
-        this.router.navigate(['listar-produto']);
-      // }else {
-        // this.invalidLogin = true;
-        // alert(data.message);
-      // }
-    // });
   }
 
   ngOnInit() {
-    window.localStorage.removeItem('token');
     this.loginForm = this.formBuilder.group({
-      username: ['', Validators.compose([Validators.required])],
+      username: ['', Validators.required],
       password: ['', Validators.required]
     });
+
+    // get return url from route parameters or default to '/'
+    this.returnUrl = this.route.snapshot.queryParams.returnUrl || '/';
   }
 
+  // convenience getter for easy access to form fields
+  get f() { return this.loginForm.controls; }
+
+  onSubmit() {
+    this.submitted = true;
+
+    // stop here if form is invalid
+    if (this.loginForm.invalid) {
+      return;
+    }
+
+    this.loading = true;
+    this.authenticationService.login(this.f.username.value, this.f.password.value)
+      .pipe(first())
+      .subscribe(
+        data => {
+          this.router.navigate([this.returnUrl]);
+        },
+        error => {
+          this.error = error;
+          this.loading = false;
+        });
+  }
 }
