@@ -8,14 +8,14 @@
 </p>
 
 <!-- TABLE OF CONTENTS -->
-## Table of Contents
+## Tabela de Conteúdo
 
-* [Technologies](#technologies)
+* [Tecnologias](#tecnologias)
   * [Backend](#backend)
   * [Frontend](#frontend)
 * [Setup](#setup)
 
-## Technologies
+## Tecnologias
 
 ### Backend
 
@@ -24,14 +24,18 @@
  - Swagger Tools;
  - XUnit (Testes de Integração);
  - Entity Framework Core (ORM);
- - MSSQL Server 2019 Linux (Database); 
- - Docker;
- - Docker Compose;
  - DbUp (for Migrations);
 
 ### Frontend
 
-- Angular 8
+- Angular 8;
+
+### Infra
+
+- MSSQL Server 2019 Linux (Database); 
+- Docker;
+- Docker Compose;
+- NGINX;
 
 ## Setup
 
@@ -39,4 +43,4 @@
 docker-compose up
 ```
 
-In your browser open http://localhost:8081/swagger/index.html
+No seu navegador abrir http://localhost:8082/
