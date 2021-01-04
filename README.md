@@ -28,6 +28,7 @@
 
 ### Frontend
 
+- TypeScript
 - Angular 8;
 
 ### Infra
