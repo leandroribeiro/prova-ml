@@ -12,6 +12,7 @@
 
 * [Technologies](#technologies)
   * [Backend](#backend)
+  * [Frontend](#frontend)
 * [Setup](#setup)
 
 ## Technologies
@@ -26,7 +27,11 @@
  - MSSQL Server 2019 Linux (Database); 
  - Docker;
  - Docker Compose;
- - DbUp;
+ - DbUp (for Migrations);
+
+### Frontend
+
+- Angular 8
 
 ## Setup
 
